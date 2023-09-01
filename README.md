@@ -1,4 +1,4 @@
-# KryptonicApp
+# GithubRepositoriesApp
 
 An android app for getting github repositories so with ability to add favorite repository to favorites list 
 also user can filter repositorties by last day,last week and last month

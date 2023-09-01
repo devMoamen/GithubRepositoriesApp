@@ -4,6 +4,7 @@ package com.kryptonictest.di
 import com.kryptonictest.BuildConfig
 import com.kryptonictest.data.remote.GithubRepositoryServices
 import com.kryptonictest.network.HttpRequestInterceptor
+import com.kryptonictest.network.NetworkErrorInterceptor
 import com.kryptonictest.network.loggerInterceptor
 import dagger.Module
 import dagger.Provides
@@ -27,6 +28,7 @@ object NetworkModule {
             .callTimeout(20, TimeUnit.SECONDS)
             .addInterceptor(HttpRequestInterceptor())
             .addInterceptor(loggerInterceptor)
+            .addInterceptor(NetworkErrorInterceptor())
             .build()
     }
 

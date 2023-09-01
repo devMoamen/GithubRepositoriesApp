@@ -29,6 +29,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,9 +82,14 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
             githubRepositoryRepo.searchGithubRepository(params).onStart {
                 showEmptyView.postValue(false)
             }.catch {
+                if (it is UnknownHostException) {
+                    showErrorMessage.postValue("No internet Connection")
+                } else {
+                    showErrorMessage.postValue(it.message)
+                }
                 isLoading.postValue(false)
+                isRefreshLoading.postValue(false)
                 showEmptyView.postValue(true)
-                showErrorMessage.postValue(it.message)
                 removeLoadingAdapter()
             }.collect {
                 if (repositoryJob?.isCancelled == true) return@collect

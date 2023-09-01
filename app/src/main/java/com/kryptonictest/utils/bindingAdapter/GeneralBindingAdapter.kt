@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.kryptonictest.R
 import com.kryptonictest.app.adapters.repositoryAdapter.RepositoryListAdapter
 import com.kryptonictest.utils.general.EndlessRecyclerOnScrollListener
@@ -18,7 +19,7 @@ object GeneralBindingAdapter {
     @BindingAdapter("loadImageGlide")
     fun loadImageGlide(view: CircularImageView, url: String?) {
         url.let {
-            Glide.with(view.context).load(url).placeholder(R.drawable.ic_no_img).into(view)
+            Glide.with(view.context).load(url)   .skipMemoryCache(true).onlyRetrieveFromCache(true).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_no_img).into(view)
         }
     }
 

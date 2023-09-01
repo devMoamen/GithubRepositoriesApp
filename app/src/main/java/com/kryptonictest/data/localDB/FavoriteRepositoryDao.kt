@@ -14,7 +14,7 @@ interface FavoriteRepositoryDao {
     fun getAllFavoriteRepositories(): List<GithubRepo>
 
     @Query("SELECT * FROM GithubRepo where id =:mId")
-    fun getFavoriteRepositoriesById(mId: Int): GithubRepo
+    fun getFavoriteRepositoryById(mId: Int): GithubRepo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFavoriteRepository(githubRepo: GithubRepo)

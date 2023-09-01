@@ -8,6 +8,7 @@ import com.kryptonictest.app.adapters.loadMoreAdapter.LoadingMoreAdapter
 import com.kryptonictest.utils.interfaces.OnRepositoryItemClickListener
 import com.kryptonictest.app.adapters.repositoryAdapter.RepositoryListAdapter
 import com.kryptonictest.app.bases.BaseViewModel
+import com.kryptonictest.domain.model.general.RepositoryFilterType
 import com.kryptonictest.domain.model.githubList.GithubRepo
 import com.kryptonictest.domain.repository.GithubRepositoryRepo
 import com.kryptonictest.network.ApiParamsConstant.PARAM_ORDER
@@ -18,6 +19,7 @@ import com.kryptonictest.network.ApiParamsConstant.PARAM_PER_PAGE_VALUE
 import com.kryptonictest.network.ApiParamsConstant.PARAM_Q
 import com.kryptonictest.network.ApiParamsConstant.PARAM_SORT
 import com.kryptonictest.network.ApiParamsConstant.PARAM_SORT_STARS
+import com.kryptonictest.utils.general.GeneralMethods
 import com.kryptonictest.utils.general.SingleLiveEvent
 import com.kryptonictest.utils.interfaces.OnLoadingMoreListener
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,6 +37,7 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
 
     private var page = 1
     private var hasMoreItems = false
+    private var filterRange = GeneralMethods.getLastMonthData()
 
     private val repositoryJob: Job? = null
 
@@ -43,6 +46,7 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
         return openRepoDetails
     }
 
+    val isRefreshAdapter = MutableLiveData<Boolean>().apply { value = false }
     val showEmptyView = MutableLiveData<Boolean>().apply { value = false }
 
     private val loadingMoreAdapter = LoadingMoreAdapter()
@@ -67,7 +71,7 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
 
     private fun getRepositories() {
         val params = HashMap<String, Any>().apply {
-            this[PARAM_Q] = "created:>2023-08-01"
+            this[PARAM_Q] = "created:>$filterRange"
             this[PARAM_PAGE] = page
             this[PARAM_SORT] = PARAM_SORT_STARS
             this[PARAM_ORDER] = PARAM_ORDER_DESC
@@ -84,6 +88,7 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
             }.collect {
                 if (repositoryJob?.isCancelled == true) return@collect
                 isRefreshLoading.postValue(false)
+                isRefreshAdapter.postValue(true)
                 isLoading.postValue(false)
                 if (page == 1 && it.items.isEmpty()) {
                     showEmptyView.postValue(true)
@@ -108,6 +113,10 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
     }
 
     val onRefreshingListener = SwipeRefreshLayout.OnRefreshListener {
+        getDataWithReset()
+    }
+
+    private fun getDataWithReset() {
         resetData()
         repositoryJob?.cancel()
         getRepositories()
@@ -127,5 +136,22 @@ class HomeViewModel @Inject constructor(private val githubRepositoryRepo: Github
 
     private fun removeLoadingAdapter() {
         concatAdapter.value!!.removeAdapter(loadingMoreAdapter)
+    }
+
+    fun onSelectFilter(filterType: RepositoryFilterType) {
+        filterRange = when (filterType) {
+            is RepositoryFilterType.LastDayFilter -> {
+                GeneralMethods.getLastDayData()
+            }
+
+            is RepositoryFilterType.LastWeekFilter -> {
+                GeneralMethods.getLastWeekData()
+            }
+
+            is RepositoryFilterType.LastMonthFilter -> {
+                GeneralMethods.getLastMonthData()
+            }
+        }
+        getDataWithReset()
     }
 }

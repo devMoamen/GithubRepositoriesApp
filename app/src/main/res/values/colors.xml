@@ -5,6 +5,7 @@
 
     <color name="blue_09">#0969DA</color>
     <color name="gray_57">#57606A</color>
+    <color name="gray_8A">#8A8D8F</color>
     <color name="color_error">#D2133F</color>
     <color name="color_success">#508E31</color>
 </resources>

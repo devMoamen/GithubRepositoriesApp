@@ -6,4 +6,11 @@
     <string name="error">Error</string>
     <string name="success">Success</string>
     <string name="no_date_found">No Data Found!</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="filter">Filter</string>
+    <string name="repository_filter">Repository filter</string>
+    <string name="last_week">Last Week</string>
+    <string name="last_month">Last Month</string>
+    <string name="last_day">Last Day</string>
 </resources>

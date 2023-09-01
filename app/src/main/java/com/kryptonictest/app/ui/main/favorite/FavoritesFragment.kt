@@ -5,10 +5,10 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.kryptonictest.R
 import com.kryptonictest.app.bases.BaseFragment
-import com.kryptonictest.app.ui.bottomSheet.repositoryDetails.RepositoryDetailsBottomSheet
+import com.kryptonictest.app.ui.bottomSheet.repositoryDetailsBS.RepositoryDetailsBottomSheet
 import com.kryptonictest.databinding.FragmentFavoritesBinding
-import com.kryptonictest.databinding.FragmentHomeBinding
 import com.kryptonictest.domain.model.githubList.GithubRepo
+import com.kryptonictest.utils.interfaces.OnChangeRepositoryFavoriteListener
 import com.kryptonictest.utils.viewBinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,7 +45,18 @@ class FavoritesFragment : BaseFragment(R.layout.fragment_favorites) {
     }
 
     private fun showDetailsBottomSheet(item: GithubRepo) {
-        RepositoryDetailsBottomSheet.showRepositoryDetailsBottomSheet(item)
-            .show(childFragmentManager, javaClass.canonicalName)
+        if (!isAdded) return
+        val showRepo = RepositoryDetailsBottomSheet.showRepositoryDetailsBottomSheet(item)
+        showRepo.setOnItemClickListener(object : OnChangeRepositoryFavoriteListener {
+            override fun onChange(item: GithubRepo, isRemove: Boolean) {
+                viewModel.addOrRemoveItemFromFavorite(item, isRemove)
+            }
+        })
+        showRepo.show(childFragmentManager, javaClass.canonicalName)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllRepositories()
     }
 }

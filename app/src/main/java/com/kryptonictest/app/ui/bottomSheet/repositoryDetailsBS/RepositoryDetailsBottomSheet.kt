@@ -1,4 +1,4 @@
-package com.kryptonictest.app.ui.bottomSheet.repositoryDetails
+package com.kryptonictest.app.ui.bottomSheet.repositoryDetailsBS
 
 import android.os.Bundle
 import android.view.View
@@ -9,6 +9,7 @@ import com.kryptonictest.databinding.BottomSheetRepositoryDetailsBinding
 import com.kryptonictest.domain.model.githubList.GithubRepo
 import com.kryptonictest.utils.extensions.newParcelable
 import com.kryptonictest.utils.general.GeneralMethods.openUrlFromExternal
+import com.kryptonictest.utils.interfaces.OnChangeRepositoryFavoriteListener
 import com.kryptonictest.utils.viewBinding.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +18,7 @@ class RepositoryDetailsBottomSheet : BaseBottomSheet(R.layout.bottom_sheet_repos
     private val binding by viewBinding(BottomSheetRepositoryDetailsBinding::bind)
 
     private val viewModel: RepositoryDetailsViewModel by viewModels()
+    private var onChangeFavoriteListener: OnChangeRepositoryFavoriteListener? = null
 
     companion object {
         fun showRepositoryDetailsBottomSheet(githubRepo: GithubRepo) =
@@ -44,8 +46,16 @@ class RepositoryDetailsBottomSheet : BaseBottomSheet(R.layout.bottom_sheet_repos
     }
 
     private fun handleObservers() {
+        viewModel.itemFavoriteChanged.observe(viewLifecycleOwner) { isAddToFavorite ->
+            onChangeFavoriteListener?.onChange(viewModel.githubRepoItem!!, !isAddToFavorite)
+        }
+
         viewModel.getOpenRepoOnGitHub().observe(viewLifecycleOwner) {
             openUrlFromExternal(it.html_url, requireActivity())
         }
+    }
+
+    fun setOnItemClickListener(onChangeFavoriteListener: OnChangeRepositoryFavoriteListener?) {
+        this.onChangeFavoriteListener = onChangeFavoriteListener
     }
 }

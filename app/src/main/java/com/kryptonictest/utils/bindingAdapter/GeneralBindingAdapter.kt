@@ -7,6 +7,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
 import com.kryptonictest.R
+import com.kryptonictest.app.adapters.repositoryAdapter.RepositoryListAdapter
 import com.kryptonictest.utils.general.EndlessRecyclerOnScrollListener
 import com.kryptonictest.utils.interfaces.OnLoadingMoreListener
 import com.kryptonictest.utils.itemDecoration.MarginItemDecoration
@@ -28,11 +29,11 @@ object GeneralBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("concatAdapter", "loadingMore")
+    @BindingAdapter("concatAdapter", "loadingMore", "isRefreshAdapter")
     fun concatAdapter(
         view: RecyclerView,
         concatAdapter: ConcatAdapter,
-        loadingMore: OnLoadingMoreListener
+        loadingMore: OnLoadingMoreListener,isRefreshAdapter: Boolean
     ) {
         with(view) {
             adapter = concatAdapter
@@ -50,4 +51,11 @@ object GeneralBindingAdapter {
         view.addItemDecoration(MarginItemDecoration(marginDecoration))
     }
 
+    @JvmStatic
+    @BindingAdapter("favoritesAdapter")
+    fun favoritesAdapter(view: RecyclerView, mAdapter: RepositoryListAdapter) {
+        with(view) {
+            adapter = mAdapter
+        }
+    }
 }

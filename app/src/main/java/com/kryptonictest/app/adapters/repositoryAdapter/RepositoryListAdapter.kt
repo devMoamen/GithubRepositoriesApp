@@ -45,10 +45,20 @@ class RepositoryListAdapter :
         notifyDataSetChanged()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun append(items: ArrayList<GithubRepo>) {
         mList.addAll(items)
         notifyItemRangeInserted(itemCount, items.size)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun removeItem(item: GithubRepo) {
+        mList.removeIf { it == item }
+        notifyDataSetChanged()
+    }
+
+    fun addItem(item: GithubRepo) {
+        mList.add(item)
+        notifyItemChanged(itemCount - 1)
     }
 
     fun changeItem(position: Int, item: GithubRepo) {

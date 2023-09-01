@@ -9,6 +9,7 @@ import com.kryptonictest.utils.interfaces.OnRepositoryItemClickListener
 import com.kryptonictest.app.adapters.repositoryAdapter.RepositoryListAdapter
 import com.kryptonictest.app.bases.BaseViewModel
 import com.kryptonictest.domain.model.githubList.GithubRepo
+import com.kryptonictest.domain.repository.FavoriteRepositoryRepo
 import com.kryptonictest.domain.repository.GithubRepositoryRepo
 import com.kryptonictest.network.ApiParamsConstant.PARAM_ORDER
 import com.kryptonictest.network.ApiParamsConstant.PARAM_ORDER_DESC
@@ -30,13 +31,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FavoritesViewModel @Inject constructor(private val githubRepositoryRepo: GithubRepositoryRepo) :
+class FavoritesViewModel @Inject constructor(private val favoriteRepositoryDao: FavoriteRepositoryRepo) :
     BaseViewModel(), OnRepositoryItemClickListener {
-
-    private var page = 1
-    private var hasMoreItems = false
-
-    private val repositoryJob: Job? = null
 
     private val openRepoDetails = SingleLiveEvent<GithubRepo>()
     fun getOpenRepoDetails(): SingleLiveEvent<GithubRepo> {
@@ -44,63 +40,44 @@ class FavoritesViewModel @Inject constructor(private val githubRepositoryRepo: G
     }
 
     val showEmptyView = MutableLiveData<Boolean>().apply { value = false }
-
-    private val loadingMoreAdapter = LoadingMoreAdapter()
-
-    private val githubRepoAdapter = RepositoryListAdapter().apply {
-        setOnItemClickListener(this@FavoritesViewModel)
+    val githubRepoAdapter = MutableLiveData<RepositoryListAdapter>().apply {
+        value = RepositoryListAdapter().apply {
+            setOnItemClickListener(this@FavoritesViewModel)
+        }
     }
 
-    val concatAdapter = MutableLiveData<ConcatAdapter>().apply {
-        value = ConcatAdapter(githubRepoAdapter)
-    }
-
-    init {
+    fun getAllRepositories() {
         isLoading.postValue(true)
         getRepositories()
     }
 
     private fun resetData() {
-        page = 1
-        githubRepoAdapter.removeAll()
+        githubRepoAdapter.value!!.removeAll()
     }
 
     private fun getRepositories() {
-        val params = HashMap<String, Any>().apply {
-            this[PARAM_Q] = "created:>2023-08-01"
-            this[PARAM_PAGE] = page
-            this[PARAM_SORT] = PARAM_SORT_STARS
-            this[PARAM_ORDER] = PARAM_ORDER_DESC
-            this[PARAM_PER_PAGE] = PARAM_PER_PAGE_VALUE
-        }
         viewModelScope.launch(Dispatchers.IO) {
-            githubRepositoryRepo.searchGithubRepository(params).onStart {
+            favoriteRepositoryDao.getAllFavoriteRepositories().onStart {
                 showEmptyView.postValue(false)
             }.catch {
                 isLoading.postValue(false)
                 showEmptyView.postValue(true)
                 showErrorMessage.postValue(it.message)
-                removeLoadingAdapter()
             }.collect {
-                if (repositoryJob?.isCancelled == true) return@collect
                 isRefreshLoading.postValue(false)
                 isLoading.postValue(false)
-                if (page == 1 && it.items.isEmpty()) {
+                if (it.isEmpty()) {
                     showEmptyView.postValue(true)
                 }
-
-                hasMoreItems = it.total_count != githubRepoAdapter.itemCount
-
                 viewModelScope.launch {
-                    removeLoadingAdapter()
-                    handleGithubRepositoryResult(it.items)
+                    handleGithubRepositoryResult(it as ArrayList<GithubRepo>)
                 }
             }
         }
     }
 
     private fun handleGithubRepositoryResult(items: ArrayList<GithubRepo>) {
-        githubRepoAdapter.append(items)
+        githubRepoAdapter.value!!.addItems(items)
     }
 
     override fun openRepositoryDetails(item: GithubRepo) {
@@ -109,23 +86,23 @@ class FavoritesViewModel @Inject constructor(private val githubRepositoryRepo: G
 
     val onRefreshingListener = SwipeRefreshLayout.OnRefreshListener {
         resetData()
-        repositoryJob?.cancel()
         getRepositories()
     }
 
-    val onLoadingMoreListener = object : OnLoadingMoreListener {
-        override fun onLoadingMore() {
-            page++
-            showLoadingAdapter()
-            getRepositories()
+
+    fun addOrRemoveItemFromFavorite(githubRepo: GithubRepo, isRemove: Boolean) {
+        if (isRemove) {
+            viewModelScope.launch(Dispatchers.IO) {
+                favoriteRepositoryDao.deleteFavoriteRepository(githubRepo.id)
+            }
+            githubRepoAdapter.value!!.removeItem(githubRepo)
+        } else {
+            githubRepoAdapter.value!!.addItem(githubRepo)
         }
+        checkIsEmptyList()
     }
 
-    private fun showLoadingAdapter() {
-        concatAdapter.value!!.addAdapter(loadingMoreAdapter)
-    }
-
-    private fun removeLoadingAdapter() {
-        concatAdapter.value!!.removeAdapter(loadingMoreAdapter)
+    private fun checkIsEmptyList() {
+        showEmptyView.postValue(githubRepoAdapter.value!!.isEmpty())
     }
 }

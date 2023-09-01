@@ -1,21 +1,26 @@
-package com.kryptonictest.app.ui.bottomSheet.repositoryDetails
+package com.kryptonictest.app.ui.bottomSheet.repositoryDetailsBS
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.kryptonictest.app.bases.BaseViewModel
-import com.kryptonictest.data.localDB.FavoriteRepositoryDao
 import com.kryptonictest.domain.model.githubList.GithubRepo
+import com.kryptonictest.domain.repository.FavoriteRepositoryRepo
 import com.kryptonictest.utils.general.SingleLiveEvent
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
-class RepositoryDetailsViewModel @Inject constructor(private val favoriteRepositoryDao: FavoriteRepositoryDao) :
+class RepositoryDetailsViewModel @Inject constructor(private val favoriteRepositoryDao: FavoriteRepositoryRepo) :
     BaseViewModel() {
 
-    private var githubRepoItem: GithubRepo? = null
+     var githubRepoItem: GithubRepo? = null
 
+    val itemFavoriteChanged = SingleLiveEvent<Boolean>()
     private val openRepoOnGitHub = SingleLiveEvent<GithubRepo>()
     fun getOpenRepoOnGitHub(): SingleLiveEvent<GithubRepo> {
         return openRepoOnGitHub
@@ -44,22 +49,21 @@ class RepositoryDetailsViewModel @Inject constructor(private val favoriteReposit
             repoLikeCount.value = stargazers_count.toString()
             repoCreateAt.value = getCreateAtStr()
             checkAddedToFavorite(id)
-
         }
-
     }
 
     private fun checkAddedToFavorite(id: Int) {
-        val itemFavorite = favoriteRepositoryDao.getFavoriteRepositoriesById(id)
-        if (itemFavorite != null) {
-            isInFavorite.value = itemFavorite.id == id
-        } else {
-            isInFavorite.value = false
+        viewModelScope.launch(Dispatchers.IO) {
+            favoriteRepositoryDao.getFavoriteRepositoryById(id).onStart {}.collect {
+                if (it != null) {
+                    isInFavorite.postValue(it.id == id)
+                    favoriteBtnTitle.postValue("Remove favorite")
+                } else {
+                    isInFavorite.postValue(false)
+                    favoriteBtnTitle.postValue("Add to favorite")
+                }
+            }
         }
-
-        favoriteBtnTitle.value =
-            if (isInFavorite.value!!) "Remove favorite" else "Add to favorite"
-
     }
 
     fun openRepoOnGitHub() {
@@ -70,15 +74,19 @@ class RepositoryDetailsViewModel @Inject constructor(private val favoriteReposit
 
     fun clickAddToFavorite() {
         githubRepoItem?.let {
-            if (isInFavorite.value!!) {
-                favoriteRepositoryDao.deleteFavoriteRepository(it.id)
-            } else {
-                favoriteRepositoryDao.insertFavoriteRepository(it)
+            viewModelScope.launch(Dispatchers.IO) {
+                if (isInFavorite.value!!) {
+                    favoriteRepositoryDao.deleteFavoriteRepository(it.id)
+                    favoriteBtnTitle.postValue("Add to favorite")
+                    isInFavorite.postValue(false)
+                    itemFavoriteChanged.postValue(false)
+                } else {
+                    favoriteRepositoryDao.insertFavoriteRepository(it)
+                    favoriteBtnTitle.postValue("Remove favorite")
+                    isInFavorite.postValue(true)
+                    itemFavoriteChanged.postValue(true)
+                }
             }
-
-            checkAddedToFavorite(it.id)
         }
     }
-
-
 }

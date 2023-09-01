@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoriteRepositoryRepo {
     fun getAllFavoriteRepositories(): Flow<List<GithubRepo>>
-    fun getFavoriteRepositoriesById(mId: Int): Flow<GithubRepo>
+    fun getFavoriteRepositoryById(mId: Int): Flow<GithubRepo?>
     fun insertFavoriteRepository(githubRepo: GithubRepo)
     fun deleteFavoriteRepository(mId: Int)
 }

@@ -32,9 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                app:concatAdapter="@{viewModel.concatAdapter}"
+                app:favoritesAdapter="@{viewModel.githubRepoAdapter}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:loadingMore="@{viewModel.onLoadingMoreListener}"
                 app:marginDecoration="@{16}"
                 tools:listitem="@layout/layout_repository" />
 

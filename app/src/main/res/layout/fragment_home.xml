@@ -33,6 +33,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 app:concatAdapter="@{viewModel.concatAdapter}"
+                app:isRefreshAdapter="@{viewModel.isRefreshAdapter()}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:loadingMore="@{viewModel.onLoadingMoreListener}"
                 app:marginDecoration="@{16}"

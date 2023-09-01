@@ -40,5 +40,3 @@ We exclude some features in app
 - Using simple UI/UX design
 - Detecting internet connection
 - High Performance
-
-- ع

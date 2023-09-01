@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.kryptonictest.app.ui.bottomSheet.repositoryDetails.RepositoryDetailsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".ui.repositoryDetails.RepositoryDetailsActivity">
+
+        <TextView
+            android:id="@+id/tvTitleLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/font_semi_bold"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="@string/repository_details"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnClose"
+            style="@style/MaterialButtonIconOnly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/actionBarItemBackground"
+            app:icon="@drawable/ic_close_circle"
+            app:iconSize="24dp"
+            app:iconTint="@color/gray_57"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/imgAvatar"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_no_img"
+            app:civ_border="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleLbl"
+            app:loadImageGlide="@{viewModel.imgUrl}" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/font_semi_bold"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text="@{viewModel.repoTitle}"
+            android:textColor="@color/blue_09"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imgAvatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgAvatar"
+            app:layout_constraintTop_toTopOf="@+id/imgAvatar"
+            tools:text="test name of repo" />
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/font_regular"
+            android:includeFontPadding="false"
+            android:maxLines="3"
+            android:text="@{viewModel.repoDescription}"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            tools:text="test description of repo" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLanguage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvLanguage"
+            app:srcCompat="@drawable/ic_lang_color" />
+
+        <TextView
+            android:id="@+id/tvLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:fontFamily="@font/font_regular"
+            android:includeFontPadding="false"
+            android:text="@{viewModel.repoLanguage}"
+            android:textColor="@color/gray_57"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvStars"
+            app:layout_constraintStart_toEndOf="@+id/imgLanguage"
+            app:layout_constraintTop_toTopOf="@+id/tvStars"
+            tools:text="java" />
+
+        <TextView
+            android:id="@+id/tvStars"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/font_medium"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="@{viewModel.repoLikeCount}"
+            android:textColor="@color/gray_57"
+            android:textSize="12sp"
+            app:drawableStartCompat="@drawable/ic_star_count"
+            app:layout_constraintStart_toEndOf="@+id/tvLanguage"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+            tools:text="0" />
+
+        <TextView
+            android:id="@+id/tvFork"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/font_regular"
+            android:includeFontPadding="false"
+            android:text="@{viewModel.repoForkCount}"
+            android:textColor="@color/gray_57"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvStars"
+            app:layout_constraintStart_toEndOf="@+id/tvStars"
+            app:layout_constraintTop_toTopOf="@+id/tvStars"
+            tools:text="fork : 0" />
+
+        <TextView
+            android:id="@+id/tvCreateAt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/font_regular"
+            android:includeFontPadding="false"
+            android:text="@{viewModel.repoCreateAt}"
+            android:textColor="@color/gray_57"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvStars"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvStars"
+            tools:text="created at oct 11,2022" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tvAddToFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/font_regular"
+            android:includeFontPadding="false"
+            android:onClick="@{() -> viewModel.clickAddToFavorite()}"
+            android:text="@{viewModel.favoriteBtnTitle}"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:backgroundTint="@color/blue_09"
+            app:icon="@{viewModel.isInFavorite() ? @drawable/ic_star_filled : @drawable/ic_star_un_favorite}"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tvLinkToGithub"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCreateAt"
+            tools:text="@string/add_to_favorite" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/tvLinkToGithub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/font_regular"
+            android:includeFontPadding="false"
+            android:onClick="@{() -> viewModel.openRepoOnGitHub()}"
+            android:text="@string/github_link"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:backgroundTint="@color/gray_57"
+            app:icon="@drawable/ic_github"
+            app:iconGravity="textStart"
+            app:iconTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/tvAddToFavorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvAddToFavorite"
+            app:layout_constraintTop_toTopOf="@+id/tvAddToFavorite" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddToFavorite" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

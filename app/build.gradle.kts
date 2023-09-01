@@ -3,7 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("com.google.dagger.hilt.android")
-    id("com.google.devtools.ksp")
+//    id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -18,6 +19,12 @@ android {
         versionName = "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
     }
 
     buildTypes {
@@ -40,6 +47,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        dataBinding = true
     }
 
     flavorDimensions.add("environment")
@@ -69,9 +77,12 @@ dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
     implementation("androidx.vectordrawable:vectordrawable:1.1.0")
 
+    //androidx jetback
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
     //Dagger Hilt
     implementation("com.google.dagger:hilt-android:2.47")
-    ksp ("com.google.dagger:hilt-compiler:2.47")
+    kapt("com.google.dagger:hilt-compiler:2.47")
 
     //Android lifesycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
@@ -81,6 +92,7 @@ dependencies {
 
     //Ui activity
     implementation("androidx.activity:activity-ktx:1.7.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.1")
 
     //coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
@@ -90,14 +102,20 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
 
-    //Images Shape
-    implementation("de.hdodenhof:circleimageview:3.1.0")
+    //room database
+    implementation("androidx.room:room-runtime:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
+
+    //image shape
+    implementation("com.mikhaellopez:circularimageview:4.3.1")
 
     //Image Loader
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
-    implementation("androidx.room:room-runtime:2.5.2")
-    ksp ("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.recyclerview:recyclerview:1.3.1")
+    implementation("androidx.cardview:cardview:1.0.0")
+
+    implementation("com.tapadoo.android:alerter:5.1.1")
 
 }

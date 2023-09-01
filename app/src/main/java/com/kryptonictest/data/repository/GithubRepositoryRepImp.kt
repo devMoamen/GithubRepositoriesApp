@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class GithubRepositoryRepImp @Inject constructor(
-    private val authRepo: GithubRepositoryServices
+    private val githubRepositoryServices: GithubRepositoryServices
 ) : GithubRepositoryRepo {
     override fun searchGithubRepository(params: HashMap<String, Any>): Flow<BaseResponse<ArrayList<GithubRepo>>> =
         flow {
-            emit(authRepo.searchGithubRepository(params))
+            emit(githubRepositoryServices.searchGithubRepository(params))
         }.flowOn(Dispatchers.IO)
 }

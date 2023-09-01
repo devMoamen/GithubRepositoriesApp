@@ -1,8 +1,6 @@
 package com.kryptonictest.di
 
-import com.kryptonictest.data.repository.GithubRepositoryFavoritesImp
 import com.kryptonictest.data.repository.GithubRepositoryRepImp
-import com.kryptonictest.domain.repository.FavoriteRepositoryRepo
 import com.kryptonictest.domain.repository.GithubRepositoryRepo
 import dagger.Binds
 import dagger.Module
@@ -16,8 +14,4 @@ abstract class RepositoryModule {
     @Binds
     @ViewModelScoped
     abstract fun provideGithubRepositoryRepo(githubRepositoryRepImp: GithubRepositoryRepImp): GithubRepositoryRepo
-
-//    @Binds
-//    @ViewModelScoped
-//    abstract fun provideFavoriteRepositoryRepo(githubRepositoryFavoritesImp: GithubRepositoryFavoritesImp): FavoriteRepositoryRepo
 }

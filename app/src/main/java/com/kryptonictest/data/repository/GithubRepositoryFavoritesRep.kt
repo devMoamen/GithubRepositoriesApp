@@ -9,23 +9,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class GithubRepositoryFavoritesImp @Inject constructor(
+class GithubRepositoryFavoritesRep @Inject constructor(
     private val favoriteRepositoryDao: FavoriteRepositoryDao
-) : FavoriteRepositoryRepo {
+) {
+    fun getAllFavoriteRepositories() = favoriteRepositoryDao.getAllFavoriteRepositories()
 
-    override fun getAllFavoriteRepositories(): Flow<List<GithubRepo>> =
-        flow {
-            emit(favoriteRepositoryDao.getAllFavoriteRepositories())
-        }.flowOn(Dispatchers.IO)
+    fun getFavoriteRepositoriesById(mId: Int) =
+        favoriteRepositoryDao.getFavoriteRepositoriesById(mId)
 
-    override fun getFavoriteRepositoriesById(mId: Int): Flow<GithubRepo> =
-        flow {
-            emit(favoriteRepositoryDao.getFavoriteRepositoriesById(mId))
-        }.flowOn(Dispatchers.IO)
-
-    override fun insertFavoriteRepository(githubRepo: GithubRepo) =
+    fun insertFavoriteRepository(githubRepo: GithubRepo) =
         favoriteRepositoryDao.insertFavoriteRepository(githubRepo)
 
-    override fun deleteFavoriteRepository(mId: Int) =
+    fun deleteFavoriteRepository(mId: Int) =
         favoriteRepositoryDao.deleteFavoriteRepository(mId)
 }

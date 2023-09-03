@@ -5,14 +5,16 @@ plugins {
     id("com.google.dagger.hilt.android")
 //    id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
-    namespace = "com.kryptonictest"
+    namespace = "com.githubRepository"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.kryptonictest"
+        applicationId = "com.githubRepository"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -117,5 +119,9 @@ dependencies {
     implementation("androidx.cardview:cardview:1.0.0")
 
     implementation("com.tapadoo.android:alerter:5.1.1")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
 }

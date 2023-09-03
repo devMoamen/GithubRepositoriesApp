@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KryptonicTest"
+rootProject.name = "GithubRepositoryTest"
 include(":app")
  

@@ -2,6 +2,8 @@ package com.githubRepository.network
 
 import android.util.Log
 import com.githubRepository.network.ApiConstants.ACCEPT_TYPE
+import com.githubRepository.network.ApiConstants.AUTHORIZATION
+import com.githubRepository.network.ApiConstants.AUTH_TOKEN
 import com.githubRepository.network.ApiConstants.CONTENT_TYPE
 import com.githubRepository.network.ApiConstants.HEADER_ACCEPT_TYPE
 import com.githubRepository.network.ApiConstants.HEADER_CONTENT_TYPE
@@ -17,6 +19,7 @@ class HttpRequestInterceptor : Interceptor {
         val request = originalRequest.newBuilder()
         request.addHeader(HEADER_CONTENT_TYPE, CONTENT_TYPE)
             .addHeader(HEADER_ACCEPT_TYPE, ACCEPT_TYPE)
+            .addHeader(AUTHORIZATION, AUTH_TOKEN)
 
         return chain.proceed(request.build())
     }

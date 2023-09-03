@@ -8,6 +8,7 @@ object ApiConstants {
     const val CONTENT_TYPE = "application/json"
     const val AUTHORIZATION = "Authorization"
     const val HEADER_ACCEPT_TYPE = "Accept"
+    const val AUTH_TOKEN = "Token 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"
 
 
     //--- api url
